@@ -11,18 +11,22 @@ function processFile(content) {
   const height = input.length;
   const width = input[0].length;
 
-  console.log("input", input, height, width);
+  //console.log("input", input, height, width);
   let basins = [0, 0, 0];
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
-      const basinSize = branchAndSearch(input, i, j, height, width);
+      const basinSize = branchAndSearch(input, i, j, height, width, "+");
       if (basinSize >= basins[0]) {
-        basins.push(basinSize);
+        basins.unshift(basinSize);
         basins = basins.sort((a, b) => a - b).slice(1);
       }
     }
   }
-
+  console.log(
+    input
+      .map((item) => item.map((k) => (k == "9" ? "*" : " ")).join(""))
+      .join("\n")
+  );
   console.log("result", basins, basins[0] * basins[1] * basins[2]);
 }
 
@@ -30,7 +34,7 @@ function branchAndSearch(arr, row, col, height, width) {
   if (row < 0 || row >= height || col < 0 || col >= width) return 0;
 
   if (arr[row][col] < 9) {
-    arr[row][col] = 9;
+    arr[row][col] = "*";
     return (
       1 +
       branchAndSearch(arr, row + 1, col, height, width) +
